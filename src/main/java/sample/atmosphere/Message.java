@@ -8,6 +8,8 @@ public class Message {
 
 	private String author;
 
+	private int flag;
+
 	private long time = new Date().getTime();
 
 	public String getMessage() {
@@ -24,6 +26,14 @@ public class Message {
 
 	public void setAuthor(String author) {
 		this.author = author;
+	}
+
+	public int getFlag() {
+		return flag;
+	}
+
+	public void setFlag(int flag) {
+		this.flag = flag;
 	}
 
 	public long getTime() {

@@ -1,8 +1,6 @@
 package sample.atmosphere;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.atmosphere.config.managed.Decoder;
 import org.atmosphere.config.managed.Encoder;
@@ -13,16 +11,13 @@ import org.atmosphere.cpr.AtmosphereResource;
 import org.atmosphere.cpr.AtmosphereResourceEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.util.StringUtils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @ManagedService(path = "/chat")
 public class ChatService {
 
-	private final Logger logger = LoggerFactory.getLogger(ChatService.class);
-
-	private static Map<String, String> usercache = new HashMap<String, String>();
+	private static final Logger logger = LoggerFactory.getLogger(ChatService.class);
 
 	@Ready
 	public void onReady(final AtmosphereResource resource) {

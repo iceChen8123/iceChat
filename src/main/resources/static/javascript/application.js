@@ -10,6 +10,8 @@ $(function() {
 	var socket = atmosphere;
 	var subSocket;
 	var transport = 'websocket';
+	var falgnum = Math.ceil(Math.random()* (flag.length));
+	var meflag = '<span class="' + flag[falgnum] + '" aria-hidden="true"></span>';
 
 	// We are now ready to cut the request
 	var request = {
@@ -58,7 +60,7 @@ $(function() {
 	request.onReopen = function(response) {
 		input.removeAttr('disabled').focus();
 		content.html($('<p>', {
-			text : 'Atmosphere re-connected using ' + response.transport
+			text : '回归地球...'
 		}));
 	};
 
@@ -82,12 +84,13 @@ $(function() {
 		input.removeAttr('disabled').focus();
 		if (!logged && myName) {
 			logged = true;
-			status.text(myName + ': ').css('color', 'blue');
+			status.text(myName + ' : ').css('color', 'blue');
+			status.html(meflag+ status.html());
 		} else {
 			var me = json.author == author;
-			var date = typeof (json.time) == 'string' ? parseInt(json.time)
-					: json.time;
-			addMessage(json.author, json.message, me ? 'blue' : 'black',
+			var date = typeof (json.time) == 'string' ? parseInt(json.time) : json.time;
+			var flagtmp = me ? meflag : '<span class="' + flag[json.flag] + '" aria-hidden="true"></span>';
+			addMessage(json.author, json.message,flagtmp, me ? 'blue' : 'black',
 					new Date(date));
 		}
 	};
@@ -124,14 +127,22 @@ $(function() {
 	input.keydown(function(e) {
 		if (e.keyCode === 13) {
 			var msg = $(this).val();
+			if(!msg){
+				return;
+			}
 
 			// First message is always the author's name
 			if (author == null) {
+				if(msg.length > 10){
+					showalert('名字太长......');
+					return;
+				}
 				author = msg;
 			}
 
 			subSocket.push(atmosphere.util.stringifyJSON({
 				author : author,
+				flag: falgnum,
 				message : msg
 			}));
 
@@ -144,13 +155,29 @@ $(function() {
 		}
 	});
 
-	function addMessage(author, message, color, datetime) {
-		content.append('<p><span style="color:' + color + '">' + author + '</span> ('
-				+ (datetime.getHours() < 10 ? '0' + datetime.getHours() : datetime.getHours()) 
-				+ ':'
-				+ (datetime.getMinutes() < 10 ? '0' + datetime.getMinutes() : datetime.getMinutes())
-				+ ':'
-				+ (datetime.getSeconds() < 10 ? '0' + datetime.getSeconds() : datetime.getSeconds()) +') 说 :'
-				+ message + '</p>');
+	var _url = "http://([w-]+.)+[w-]+(/[w- ./?%&=]*)?"; 
+
+	var msgid= 0;
+	
+	function addMessage(author, message,flag, color, datetime) {
+//		if(_url.search(message) >= 0){
+//			content.append('<p><a href="'+ message+ '"  target="_blank"><span style="color:' + color + '">' + author + '</span> ('
+//					+ (datetime.getHours() < 10 ? '0' + datetime.getHours() : datetime.getHours()) 
+//					+ ':'
+//					+ (datetime.getMinutes() < 10 ? '0' + datetime.getMinutes() : datetime.getMinutes())
+//					+ ':'
+//					+ (datetime.getSeconds() < 10 ? '0' + datetime.getSeconds() : datetime.getSeconds()) +') 说 :'
+//					+ message + '</a><span style="color: red">(点击外链,请注意安全.)</span><p>');
+//		}else{
+			content.append('<div id="'+msgid + '" class="alert alert-info"><p>' + flag + '&nbsp;<span style="color:' + color + '">' + author + '</span> ('
+					+ (datetime.getHours() < 10 ? '0' + datetime.getHours() : datetime.getHours()) 
+					+ ':'
+					+ (datetime.getMinutes() < 10 ? '0' + datetime.getMinutes() : datetime.getMinutes())
+					+ ':'
+					+ (datetime.getSeconds() < 10 ? '0' + datetime.getSeconds() : datetime.getSeconds()) +') 说 :'
+					+ message + '</p></div>');
+			document.getElementById(msgid).scrollIntoView(true);
+			msgid++;
+//		}
 	}
 });
