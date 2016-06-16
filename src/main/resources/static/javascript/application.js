@@ -107,7 +107,7 @@ $(function() {
 
 	request.onError = function(response) {
 		content.html($('<p>', {
-			text : '网络断了...可能服务器炸了...'
+			text : '网络断了...可能服务器爆炸了...'
 		}));
 		logged = false;
 	};
@@ -145,15 +145,12 @@ $(function() {
 	});
 
 	function addMessage(author, message, color, datetime) {
-		content.append('<p><span style="color:'
-				+ color
-				+ '">'
-				+ author
-				+ '</span> 说 '
-				+ +(datetime.getHours() < 10 ? '0' + datetime.getHours()
-						: datetime.getHours())
+		content.append('<p><span style="color:' + color + '">' + author + '</span> ('
+				+ (datetime.getHours() < 10 ? '0' + datetime.getHours() : datetime.getHours()) 
 				+ ':'
-				+ (datetime.getMinutes() < 10 ? '0' + datetime.getMinutes()
-						: datetime.getMinutes()) + ': ' + message + '</p>');
+				+ (datetime.getMinutes() < 10 ? '0' + datetime.getMinutes() : datetime.getMinutes())
+				+ ':'
+				+ (datetime.getSeconds() < 10 ? '0' + datetime.getSeconds() : datetime.getSeconds()) +') 说 :'
+				+ message + '</p>');
 	}
 });
